@@ -1,6 +1,7 @@
+import os
 from operator import methodcaller
 
-from flask import Flask, request, abort
+from flask import abort, Flask, request
 
 import db
 
@@ -60,4 +61,4 @@ def search_data():
 
 
 if __name__ == '__main__':
-    app.run('0.0.0.0', 80)
+    app.run('0.0.0.0', int(os.getenv('PORT', 80)))
