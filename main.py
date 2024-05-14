@@ -5,6 +5,7 @@ from flask import abort, Flask, request
 from flask_cors import CORS
 
 import db
+from db import StatusCode
 
 
 def process_candidates(raw_names: str, raw_mails: str) -> dict[str, str]:
@@ -43,10 +44,13 @@ def process_data():
 
     result = db.add_teachers(process_candidates(names, mails))
 
-    if not result:
-        return abort(500)
-
-    return 'Successfully added teachers!'
+    match result:
+        case StatusCode.ENTRY_CONFLICTS:
+            return abort(400)
+        case StatusCode.ENTRY_NOT_ACK:
+            return abort(500)
+        case _:
+            return 'Successfully added teachers!', 200
 
 
 @app.route('/search', methods=['POST'])
