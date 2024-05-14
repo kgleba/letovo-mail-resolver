@@ -2,6 +2,7 @@ import os
 from operator import methodcaller
 
 from flask import abort, Flask, request
+from flask_cors import CORS
 
 import db
 
@@ -24,6 +25,7 @@ def process_candidates(raw_names: str, raw_mails: str) -> dict[str, str]:
 
 
 app = Flask(__name__)
+CORS(app)
 
 
 @app.route('/')
