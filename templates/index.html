@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Letovo Mail Resolver</title>
+</head>
+<body>
+    <p>
+        Проект для удобного нахождения почты учителей по их ФИО, потому что сейчас никакого унифицированного способа добиться этого нет.
+        <br>
+        К сожалению, никакой уязвимости, раскрывающей "все и сразу" не нашлось, поэтому придется собирать "с миру по нитке" – каждый из вас может пополнить базу данных своими преподавателями.
+        <br>
+        Из хороших новостей: я написал JS-скрипт, который автоматизирует всю деятельность за вас. Исполнить его нужно на страничке "Текущего учебного плана" в консоли разработчика (Ctrl + Shift + I):
+    </p>
+
+    <pre><code class="language-js">let name_blocks = Array.from(document.querySelectorAll('td > a[href="about:blank"]'));
+let names = name_blocks.map((elem) => elem.firstChild.data.trim()).join(";");
+let mails = document.querySelector('h5 > a').href;
+const headers = {"Accept": "application/json", "Content-Type": "application/json"}
+
+fetch("https://letovo-mail-resolver-fd1be9c6ec63.herokuapp.com/parse", {method: "post", body: JSON.stringify({names: names, mails: mails}), headers: headers})</code></pre>
+
+    <p>
+        Он соберет имена ваших преподавателей и их почты и отправит мне на сервер. Правда ничего больше =)
+        <br>
+        Вы – (маленькая) тестовая группа с начальными знаниями в проге, так что помощь будет very much appreciated
+        <br>
+        <b>Чего я хочу конкретно от этого запуска?</b> Посмотреть с какими косяками столкнется скрипт или мой бэкенд.
+        <br>
+        В будущем эта страничка и домен станут посимпатичнее.
+        <br>
+        Веб-интерфейса пока нет, зато есть REST API:
+        <ol>
+            <li><b>/parse</b> – принимает POST-запрос с телом JSON с полями `names` и `mails` </li>
+            <li><b>/search</b> – принимает POST-запрос с JSON-полем `name` с ФИО преподавателя как в аналитике (разумеется, планирую сделать fuzzy поиск)</li>
+        </ol>
+    </p>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+
+    <script>hljs.highlightAll();</script>
+</body>
+</html>

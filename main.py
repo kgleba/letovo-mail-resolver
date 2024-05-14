@@ -1,7 +1,7 @@
 import os
 from operator import methodcaller
 
-from flask import abort, Flask, request
+from flask import abort, Flask, request, render_template
 from flask_cors import CORS
 
 import db
@@ -31,7 +31,7 @@ CORS(app)
 
 @app.route('/')
 def index():
-    return ''
+    return render_template('index.html')
 
 
 @app.route('/parse', methods=['POST'])

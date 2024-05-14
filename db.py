@@ -37,7 +37,9 @@ def add_teacher(name: str, mail: str) -> StatusCode:
         if teacher['mail'] == mail:
             return StatusCode.ENTRY_EXISTS
 
-        conflicts_collection.insert_one({'name': name, 'mail': mail})
+        if conflicts_collection.find_one({'name': name, 'mail': mail}) is None:
+            conflicts_collection.insert_one({'name': name, 'mail': mail})
+
         return StatusCode.ENTRY_CONFLICTS
 
     response = teachers_collection.insert_one({'name': name, 'mail': mail})
