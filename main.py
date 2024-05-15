@@ -31,7 +31,7 @@ CORS(app)
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('engine.html')
 
 
 @app.route('/parse', methods=['POST'])
@@ -59,11 +59,9 @@ def search_data():
     if name is None:
         return abort(400)
 
-    teacher = db.get_teacher_by_name(name)
-    if teacher is None:
-        return abort(404)
+    teachers = db.get_teachers_by_partial_name(name)
 
-    return {'name': teacher['name'], 'mail': teacher['mail']}
+    return [{'name': teacher['name'], 'mail': teacher['mail']} for teacher in teachers]
 
 
 if __name__ == '__main__':

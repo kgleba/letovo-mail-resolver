@@ -1,4 +1,5 @@
 import os
+import re
 from enum import auto, Enum
 
 from pymongo import MongoClient
@@ -22,8 +23,12 @@ def get_all_teachers() -> list[dict]:
     return list(teachers_collection.find({}))
 
 
-def get_teacher_by_name(name: str) -> dict | None:
+def get_teacher_by_exact_name(name: str) -> dict | None:
     return teachers_collection.find_one({'name': name})
+
+
+def get_teachers_by_partial_name(name: str) -> list[dict]:
+    return list(teachers_collection.find({'name': re.compile(name, re.IGNORECASE)}))
 
 
 def get_teacher_by_fuzzy_name(name: str) -> dict | None:
@@ -31,7 +36,7 @@ def get_teacher_by_fuzzy_name(name: str) -> dict | None:
 
 
 def add_teacher(name: str, mail: str) -> StatusCode:
-    teacher = get_teacher_by_name(name)
+    teacher = get_teacher_by_exact_name(name)
 
     if teacher is not None:
         if teacher['mail'] == mail:

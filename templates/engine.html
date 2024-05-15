@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Letovo Mail Resolver</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+
+    input {
+      margin-bottom: 10px;
+      padding: 5px;
+      font-size: 16px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+  </style>
+</head>
+<body>
+  <h1>Letovo Mail Resolver</h1>
+  <input type="text" id="searchInput" placeholder="Enter name to search">
+  <div id="searchResults"></div>
+
+  <script>
+    const searchInput = document.getElementById('searchInput');
+    const searchResultsDiv = document.getElementById('searchResults');
+
+    async function search() {
+      const searchString = searchInput.value.trim();
+      if (!searchString) {
+        searchResultsDiv.innerHTML = '';
+        return;
+      }
+
+      const response = await fetch('/search', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ name: searchString })
+      });
+      const data = await response.json();
+
+      if (data.length > 0) {
+        const table = `
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>E-mail</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${data.map(item => `
+                <tr>
+                  <td>${item.name}</td>
+                  <td>${item.mail}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        `;
+        searchResultsDiv.innerHTML = table;
+      } else {
+        searchResultsDiv.innerHTML = '<p>No results found</p>';
+      }
+    }
+
+    searchInput.addEventListener('input', search);
+  </script>
+</body>
+</html>
